@@ -14,6 +14,16 @@ from PubmedArticle import PubmedArticle
 from datetime import datetime
 from typing import List
 
+# Note: COMMIT_THRESHOLD is somewhat arbitrary - if too small, then we will
+#       create too many segment files, slowing down searches and maybe
+#       creating a too many files open error when searching.
+#       If too large, then we will get an index overflow error when indexing
+#  I know a threshold of 10000 will create a too many files open error
+#  I know that no thrsehold will cause it to crash on file 277, and each file
+#       contains 30000 files
+#  Therefore, I am using a threshold of 276*30000 which should be a good balance
+COMMIT_THRESHOLD = 8280000
+
 
 class PubmedIndexer:
     """
@@ -164,7 +174,7 @@ class PubmedIndexer:
                 abstract_text=article.abstract_text)
 
             #perform intermediate commits to avoid overflow errors
-            if count_from_commit > 10000:
+            if count_from_commit > COMMIT_THRESHOLD:
                 # commit and reopen the writer
                 pubmed_article_writer.commit(merge=False)
                 pubmed_article_writer = self.pubmed_article_ix.writer()
