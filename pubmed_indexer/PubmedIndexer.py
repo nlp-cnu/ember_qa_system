@@ -21,8 +21,10 @@ from typing import List
 #  I know a threshold of 10000 will create a too many files open error
 #  I know that no thrsehold will cause it to crash on file 277, and each file
 #       contains 30000 files
-#  Therefore, I am using a threshold of 276*30000 which should be a good balance
-COMMIT_THRESHOLD = 8280000
+#  Therefore, I am using a threshold of 276*30000=8280000 which should be a good balance
+#      ...but then, that crashed too, so setting it to 8000000, then crashed so, decreasing
+#      it to 4000000
+COMMIT_THRESHOLD = 4000000
 
 
 class PubmedIndexer:
