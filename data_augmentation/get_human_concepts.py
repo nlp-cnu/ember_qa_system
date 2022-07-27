@@ -92,8 +92,8 @@ if __name__ == "__main__":
             human_concepts = make_human_readable(concepts, path_to_mrconso)
             question["human_concepts"] = human_concepts
         n=n+1
+        
     # 3) write changes back to file
-
     with open(path_to_data,'w') as outfile:
         json.dump(training_dataset,outfile,indent=4)
         outfile.close()

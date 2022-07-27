@@ -1,12 +1,12 @@
 import argparse
 import json
 import os
-import pickle
 from lxml import etree as ET
 
-def get_dataset_pmids(gold_dataset,loc_to_save_pmids):
+# function to get pmids from the dataset
+def get_dataset_pmids(dataset_loc):
     dataset = None
-    with open(gold_dataset) as d:
+    with open(dataset_loc) as d:
         dataset = json.loads(d.read())
     questions = dataset["questions"]
     pmids = set()
@@ -16,21 +16,22 @@ def get_dataset_pmids(gold_dataset,loc_to_save_pmids):
             ids = [url.rsplit('/', 1)[-1] for url in documents]
             if ids:
                 pmids.update(ids)
-    # save the discovered pmids to file
-    print(f"saving {len(pmids)} PMIDs to {loc_to_save_pmids}")
-    with open(loc_to_save_pmids,"wb") as f:
-        pickle.dump(pmids,f)
+    return pmids
 
-def map_abstracts_to_ids(pmids,database_dir,pmid_abstract_path):
-    print("Getting the abstract for each pmid")
-    with open(pmids,"rb") as f:
-        pmids_set = pickle.load(f)
+# function to get abstracts for each pmid in the dataset
+def map_abstracts_to_ids(pmids, database_dir):
     pmid_abstract_dict = dict()
 
     #iterate through each db file
     db_files= os.listdir(database_dir)
     for db_file in db_files:
         full_path = database_dir+ "/" + db_file
+
+        #only process .xml.gz files
+        if full_path[-7:] != '.xml.gz':
+            continue
+
+        # read the pubmed file
         print(f"opening db: {full_path}")
         pm_tree = ET.parse(full_path)
         if not pm_tree:
@@ -41,7 +42,7 @@ def map_abstracts_to_ids(pmids,database_dir,pmid_abstract_path):
         for article in pubmed_articles:
             try:
                 id = article.find("MedlineCitation").find("PMID").text
-                if id in pmids_set:
+                if id in pmids:
                     try:
                         art_ref = article.find('MedlineCitation').find('Article')
                         abstract = art_ref.find('Abstract').find('AbstractText').text
@@ -53,14 +54,13 @@ def map_abstracts_to_ids(pmids,database_dir,pmid_abstract_path):
                         print(str(e))
             except Exception as e:
                 print(str(e)) 
-    print(f"saving {len(pmid_abstract_dict)} abstracts to {pmid_abstract_path}")
-    with open(pmid_abstract_path,"wb") as f:
-        pickle.dump(pmid_abstract_dict,f)
 
-def add_full_abstracts(old_dataset, pmid_map, new_dataset):
-    print(f"adding full_abstracts to {old_dataset} from {pmid_map} and saving as {new_dataset}")
-    with open(pmid_map,"rb") as f:
-        pmid_abstract_dict = pickle.load(f)
+    return pmid_abstract_dict
+
+# function to add the found abstracts to the dataset
+def add_full_abstracts(old_dataset, pmid_abstract_dict, new_dataset):
+    print(f"adding full_abstracts to {old_dataset}")
+    
     dataset = None
     with open(old_dataset) as d:
         dataset = json.loads(d.read())
@@ -86,32 +86,14 @@ if __name__ == "__main__":
 
     # get arguments from the user
     parser = argparse.ArgumentParser()
-    parser.add_argument("path_to_data", help="The filepath to the data (e.g. data/training8b.json")
-    parser.add_argument("path_to_pmids", help="The filepath to the pmids file created by the indexer e.g. index/pmids.txt") #TODO - is this what it is?  where did the pmids.txt file come from?
-    parser.add_argument("path_to_pubmed_index") #TODO --- add the other fields, but I'm not sure where they come from.
+    parser.add_argument("path_to_data", help="The filepath to the qa data (e.g. data/training8b.json")
+    parser.add_argument("path_to_pubmed_dir", help="The filepath to the directory containing PubMed (e.g. the .xml.gz files, not the pubmed index") 
 
     args = parser.parse_args()
     path_to_data = args.path_to_data
-    path_to_pmids = args.path_to_pmids
-    #TODO -- get others, delete hardcoded, and use these variabls instead of hard-coded
-    
-    gold_dataset = "testing_datasets/BioASQ-training8b/training8b.json"
-    augmented_dataset = "testing_datasets/BioASQ-training8b/augmented_test_FULL_ABSTRACTS.json"
-    pubmed_db_dir = "umls/pubmed"
-    pmids_path = "testing_datasets/pmids.txt"
-    pmid_abstract_path = "testing_datasets/pmids_and_abstracts.txt"
+    path_to_pubmed_dir = args.path_to_pubmed_dir
 
-    get_dataset_pmids(gold_dataset,pmids_path)
-    map_abstracts_to_ids(pmids_path,pubmed_db_dir,pmid_abstract_path)
-    add_full_abstracts(gold_dataset, pmid_abstract_path, augmented_dataset)
+    pmids = get_dataset_pmids(path_to_data)
+    pmids_to_abstracts = map_abstracts_to_ids(pmids, path_to_pubmed_dir)
+    add_full_abstracts(path_to_data, pmids_to_abstracts, path_to_data)
 
-   
-    #gold_dataset = "testing_datasets/BioASQ-training8b/training8b.json"
-    #augmented_dataset = "testing_datasets/BioASQ-training8b/augmented_test_FULL_ABSTRACTS.json"
-    #pubmed_db_dir = "umls/pubmed"
-    #pmids_path = "testing_datasets/pmids.txt"
-    #pmid_abstract_path = "testing_datasets/pmids_and_abstracts.txt"
-    #
-    #get_dataset_pmids(gold_dataset,pmids_path)
-    #map_abstracts_to_ids(pmids_path,pubmed_db_dir,pmid_abstract_path)
-    #add_full_abstracts(gold_dataset, pmid_abstract_path, augmented_dataset)
