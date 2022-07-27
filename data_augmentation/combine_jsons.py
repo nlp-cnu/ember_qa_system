@@ -15,9 +15,11 @@ def combine_files(dir_of_files, output_file):
                 data=json.loads(f.read())
                 combined.extend(data["questions"])
 
-    # output the combined file
+    # format and output the combined file
+    output = {}
+    output["questions"] = combined
     with open(output_file, 'w') as out:
-        json.dump(combined, out)
+        json.dump(output, out)
 
 
 if __name__ == "__main__":
