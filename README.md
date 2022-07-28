@@ -56,4 +56,3 @@ ii.	Run get_titles_and_abstracts.py
 
 Note: There is currently a problem loading the QU model. I think this is a dependency issue. We need to rewrite that module.
 
-![image](https://user-images.githubusercontent.com/14182741/181635374-acb082e5-def6-40f1-92af-d7ded3e51fe5.png)
