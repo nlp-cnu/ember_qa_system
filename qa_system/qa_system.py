@@ -21,9 +21,9 @@ from whoosh.analysis import StemmingAnalyzer
 from whoosh.qparser import QueryParser
 
 import setup
-import question_processing.question_understanding
-import document_processing.information_retrieval
-import answer_processing.question_answering
+import question_processing.question_understanding as question_understanding
+import document_processing.information_retrieval as information_retrieval
+import answer_processing.question_answering as question_answering
 import analysis_and_evaluation.analysis
 
 def cleanup():
