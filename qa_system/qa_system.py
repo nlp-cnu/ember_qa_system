@@ -497,10 +497,9 @@ if __name__ == "__main__":
         print(f"{MAGENTA}Initializing model...{OFF}")
         device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
         tokenizer = BertTokenizer.from_pretrained("bert-base-uncased")
-        # TODO - this doesn't work for some reason, but it used to...
-        #model = BertForSequenceClassification.from_pretrained(
-        #    data_folder + os.path.sep + model_folder_name, cache_dir=None
-        #)
+        model = BertForSequenceClassification.from_pretrained(
+            data_folder + os.path.sep + model_folder_name, cache_dir=None
+        )
         
         # load in BioBERT
         print(f"{MAGENTA}Loading BioBERT...{OFF}")
