@@ -1,4 +1,4 @@
-absl-py==0.11.0
+absl-py
 astor==0.8.1
 beautifulsoup4==4.9.3
 blis==0.7.4
@@ -26,9 +26,9 @@ lxml==4.6.2
 Markdown==3.3.4
 MarkupSafe==1.1.1
 murmurhash==1.0.5
-nltk==3.7
+nltk
 nmslib==2.1.1
-numpy==1.19.0
+numpy
 opt-einsum==3.3.0
 packaging==20.9
 pandas==1.2.3
@@ -42,7 +42,7 @@ pyparsing==2.4.7
 pysbd==0.3.4
 python-dateutil==2.8.1
 pytz==2021.1
-regex==2020.11.13
+regex
 requests==2.25.1
 sacremoses==0.0.43
 scikit-learn==0.24.1
@@ -54,9 +54,9 @@ soupsieve==2.2
 spacy==3.0.3
 spacy-legacy==3.0.1
 srsly==2.4.0
-tensorboard==1.15.0
+tensorboard
+tensorflow-estimator
 tensorflow
-tensorflow-estimator==1.15.1
 termcolor==1.1.0
 thinc==8.0.1
 threadpoolctl==2.1.0

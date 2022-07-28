@@ -497,15 +497,19 @@ if __name__ == "__main__":
         print(f"{MAGENTA}Initializing model...{OFF}")
         device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
         tokenizer = BertTokenizer.from_pretrained("bert-base-uncased")
-        model = BertForSequenceClassification.from_pretrained(
-            data_folder + os.path.sep + model_folder_name, cache_dir=None
-        )
+        # TODO - this doesn't work for some reason, but it used to...
+        #model = BertForSequenceClassification.from_pretrained(
+        #    data_folder + os.path.sep + model_folder_name, cache_dir=None
+        #)
+        
         # load in BioBERT
         print(f"{MAGENTA}Loading BioBERT...{OFF}")
         nlp = en_core_sci_lg.load()
+        
         # load index
         index_var = "full_index"
         print(f"{MAGENTA}Loading index...{OFF}")
+        
         # This is the schema for each query retrieved from Pubmed
         pubmed_article_ix = index.open_dir(
             data_folder + os.path.sep + index_folder_name + os.path.sep + index_var,
