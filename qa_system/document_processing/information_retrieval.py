@@ -4,7 +4,7 @@ import lxml.etree as ET
 import os
 from utils import *
 
-import PubmedA
+import document_processing.PubmedA
 
 # Here we receive input of the form (id, question, type, entities, query).
 # We use this input to query the PubMed database index which has been specially indexed to improve query times.

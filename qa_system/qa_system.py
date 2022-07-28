@@ -21,10 +21,10 @@ from whoosh.analysis import StemmingAnalyzer
 from whoosh.qparser import QueryParser
 
 import setup
-import question_understanding
-import information_retrieval
-import question_answering
-import analysis
+import question_processing.question_understanding
+import document_processing.information_retrieval
+import answer_processing.question_answering
+import analysis_and_evaluation.analysis
 
 def cleanup():
     clear_tmp_dir("tmp/qu")
